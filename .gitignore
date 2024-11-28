@@ -4,5 +4,5 @@ datos.xlsx
 
 PyWhatKit_DB.txt
 
-_pycache_/
+__pycache__/
 
