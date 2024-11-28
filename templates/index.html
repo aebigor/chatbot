@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Paquete</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Buscar Paquete</h1>
+        <form id="buscar-form">
+            <input type="text" id="numero_guia" name="numero_guia" placeholder="Número de guía" required>
+            <button type="submit">Buscar</button>
+        </form>
+        <button id="historial-btn">Historial</button>
+        <div id="resultado" style="display:none;">
+            <h2>Información del Paquete</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo de Cobro</th>
+                        <th>Monto a Cobrar</th>
+                        <th>Motivo de Devolución</th>
+                        <th>Observación</th>
+                        <th>Justifica</th>
+                        <th>Llamado</th>
+                        <th>Número Telefónico</th> <!-- Nueva columna para el número telefónico -->
+                    </tr>
+                </thead>
+                <tbody id="tabla-resultados">
+                    <!-- Los resultados se insertarán aquí -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#buscar-form').on('submit', function(event) {
+                event.preventDefault();
+                const numeroGuia = $('#numero_guia').val();
+                $.ajax({
+                    url: '/buscar_paquete',
+                    method: 'POST',
+                    data: { numero_guia: numeroGuia },
+                    success: function(data) {
+                        $('#tabla-resultados').html(`
+                            <tr>
+                                <td>${data.nombre}</td>
+                                <td>${data.tipo_cobro}</td>
+                                <td>$${data.monto_cobro}</td>
+                                <td>${data.motivo_devolucion}</td>
+                                <td>${data.observacion}</td>
+                                <td>${data.justifica ? 'Sí' : 'No'}</td>
+                                <td>${data.llamado ? 'Sí' : 'No'}</td>
+                                <td>${data.telefono}</td> <!-- Mostrar el número telefónico -->
+                            </tr>
+                        `);
+                        $('#resultado').show(); // Mostrar la tabla con resultados
+                    },
+                    error: function() {
+                        $('#resultado').hide(); // Ocultar la tabla si no se encuentra el paquete
+                        alert('Paquete no encontrado.');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
